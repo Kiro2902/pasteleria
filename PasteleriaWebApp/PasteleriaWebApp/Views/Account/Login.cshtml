@@ -17,7 +17,7 @@
                 <div class="card shadow">
                     <div class="card-body">
                         <h3 class="text-center mb-4">Pastelería Login</h3>
-                        
+
                         <form asp-action="Login" method="post">
                             <div class="mb-3">
                                 <label class="form-label">Correo Electrónico</label>
@@ -30,7 +30,7 @@
 
                             @if (ViewBag.Error != null)
                             {
-                                <div class="alert alert-danger p-2">@ViewBag.Error</div>
+                                    <div class="alert alert-danger p-2">@ViewBag.Error</div>
                             }
 
                             <button type="submit" class="btn btn-primary w-100">Ingresar al Sistema</button>

@@ -1,10 +1,16 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using PasteleriaWebApp.Data.Infrastructure;
+using PasteleriaWebApp.Data.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// INYECTAR DEPENDENCIAS
+builder.Services.AddScoped<ICategoria, CategoriaRepository>();
+builder.Services.AddScoped<IProducto, ProductoRepository>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {

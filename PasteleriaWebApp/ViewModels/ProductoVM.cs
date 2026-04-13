@@ -20,7 +20,7 @@ namespace PasteleriaWebApp.ViewModels
         [Required(ErrorMessage = "Debe indicar el stock del producto.")]
         public int StockActual { get; set; }
         public int StockMinimo { get; set; }
-        public DateTime FechaVencimiento { get; set; }
+        public DateTime? FechaVencimiento { get; set; }
 
         [DisplayName("Categoría")]
         [Required(ErrorMessage = "Debe indicar la categoría del producto.")]

@@ -34,10 +34,9 @@
             <li class="list-group-item">@item.StockActual</li>
         </ul>
         <div class="card-footer">
-                <button type="submit" class="btn btn-primary">@Html.ActionLink("Ver Detalles", "Details", new { id = item.ID }) </button>
-                <button type="submit" class="btn btn-primary">@Html.ActionLink("Eliminar", "Delete", new { id = item.ID })</button>
-                </div>
+                <button type="submit">@Html.ActionLink("Ver Detalles", "Detail", new { id = item.ID }) </button> | <button type="submit">@Html.ActionLink("Eliminar", "Delete", new { id = item.ID })</button>
         </div>
+    </div>
 }
 </div>
 

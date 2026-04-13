@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using PasteleriaWebApp.Data.Infrastructure;
 using PasteleriaWebApp.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PasteleriaWebApp.Data.Repositories
 {
@@ -69,7 +70,7 @@ namespace PasteleriaWebApp.Data.Repositories
             var producto = new Producto();
             using (var conexion = new SqlConnection(cadenaConexion))
             {
-                using (var comando = new SqlCommand("SELECT P.*, CP.Nombre AS NombreCategoria FROM Productos P INNER JOIN Categorias CP ON P.IDCategoria = CP.ID WHERE P.IDProducto = @ID", conexion))
+                using (var comando = new SqlCommand("SELECT P.*, C.NombreCategoria AS NombreCategoria FROM Productos P INNER JOIN Categorias C ON P.IDCategoria = C.IDCategoria WHERE P.IDProducto = @ID", conexion))
                 {
                     comando.Parameters.AddWithValue("@ID", id);
                     conexion.Open();
@@ -91,17 +92,22 @@ namespace PasteleriaWebApp.Data.Repositories
             var exito = false;
             using (var conexion = new SqlConnection(cadenaConexion))
             {
-                using (var comando = new SqlCommand("INSERT INTO Productos(Nombre, Descripcion, CategoriaID, Precio, PathImagen, Activo) " +
-                    "VALUES(@nombre,@descripcion,@categoria,@precio, @imagen,'1')", conexion))
+                DateTime fechaParaGuardar = entity.FechaVencimiento;
+
+                if (fechaParaGuardar < new DateTime(1753, 1, 1))
+                {
+                    fechaParaGuardar = DateTime.Now.AddMonths(6);
+                }
+
+                using (var comando = new SqlCommand("INSERT INTO Productos (Nombre, PrecioCompra, StockActual, StockMinimo, FechaVencimiento, DiasAlerta, IdCategoria) VALUES (@nombre, @precio, @stockActual, @stockMinimo, @fechaVencimiento, @diasAlerta, @IdCategoria)", conexion))
                 {
                     comando.Parameters.AddWithValue("@nombre", entity.Nombre);
-                    comando.Parameters.AddWithValue("@preciocompra", entity.Precio);
-                    comando.Parameters.AddWithValue("@stockactual", entity.StockActual);
-                    comando.Parameters.AddWithValue("@stockminimo", entity.StockMinimo);
-                    comando.Parameters.AddWithValue("@fechavencimiento", entity.FechaVencimiento);
-                    comando.Parameters.AddWithValue("@diasalerta", entity.DiasAlerta);
-                    comando.Parameters.AddWithValue("@categoria", entity.CategoriaID);
-                    comando.Parameters.AddWithValue("@ID", entity.ID);
+                    comando.Parameters.AddWithValue("@precio", entity.Precio);
+                    comando.Parameters.AddWithValue("@stockActual", entity.StockActual);
+                    comando.Parameters.AddWithValue("@stockMinimo", entity.StockMinimo);
+                    comando.Parameters.AddWithValue("@fechaVencimiento", fechaParaGuardar);
+                    comando.Parameters.AddWithValue("@diasAlerta", entity.DiasAlerta);
+                    comando.Parameters.AddWithValue("@IdCategoria", entity.CategoriaID);
                     conexion.Open();
                     exito = comando.ExecuteNonQuery() > 0;
                 }

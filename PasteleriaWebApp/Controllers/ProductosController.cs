@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PasteleriaWebApp.Data.Extensions;
 using PasteleriaWebApp.Data.Infrastructure;
+using PasteleriaWebApp.Data.Repositories;
 using PasteleriaWebApp.Data.Services;
 using PasteleriaWebApp.Models;
 using PasteleriaWebApp.ViewModels;
@@ -48,7 +49,9 @@ namespace PasteleriaWebApp.Controllers
         }
         public IActionResult Detail(int id)
         {
-            var productoBuscado = _productoDB.ObtenerPorID(id);
+            var productoBuscado = services.ObtenerProductoPorID(id).ToViewModel();
+            productoBuscado.Categoria = services.ObtenerCategoriaPorID(productoBuscado.CategoriaID).Nombre;
+
             return View(productoBuscado);
         }
         public IActionResult Create()
@@ -73,6 +76,7 @@ namespace PasteleriaWebApp.Controllers
                 Nombre = model.Nombre,
                 Precio = model.Precio,
                 StockActual = model.StockActual,
+                StockMinimo = model.StockMinimo,
                 CategoriaID = model.CategoriaID
             };
 
@@ -80,12 +84,31 @@ namespace PasteleriaWebApp.Controllers
             return RedirectToAction("Index");
         }
 
-            public IActionResult Edit(int id)
+        [HttpGet]
+        public IActionResult Edit(int id)
         {
             var productoBuscado = _productoDB.ObtenerPorID(id);
+
+            if (productoBuscado == null)
+            {
+                return NotFound();
+            }
+            var modelView = new ProductoVM
+            {
+                ID = productoBuscado.ID,
+                Nombre = productoBuscado.Nombre,
+                Precio = productoBuscado.Precio, // Asegúrate de mapear los nombres correctos
+                StockActual = productoBuscado.StockActual,
+                StockMinimo = productoBuscado.StockMinimo,
+                FechaVencimiento = productoBuscado.FechaVencimiento DateTime.Now,
+                CategoriaID = productoBuscado.CategoriaID // El ID que se usará en el <select>
+            };
+                return View(modelView);
+        };
+            /*var productoBuscado = _productoDB.ObtenerPorID(id);
             var categorias = _categoriaDB.Listar();
             ViewBag.Categorias = new SelectList(categorias, "ID", "Nombre");
-            return View(productoBuscado);
+            return View(productoBuscado);*/
         }
 
         [HttpPost]
@@ -95,6 +118,11 @@ namespace PasteleriaWebApp.Controllers
             if (exito)
                 return RedirectToAction("Detail", new { id = producto.ID });
             return View(producto);
+        }
+
+        public IActionResult Alert()
+        {
+            return View();
         }
     }
 }

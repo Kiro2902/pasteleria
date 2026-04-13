@@ -7,7 +7,7 @@ namespace PasteleriaWebApp.Data.Extensions
     {
         public static ProductoVM ToViewModel(this Producto producto)
         {
-            if (producto == null) throw new ArgumentNullException("El cliente no ha sido creado");
+            if (producto == null) throw new ArgumentNullException("El producto no ha sido creado");
 
             return new ProductoVM
             {
@@ -15,6 +15,7 @@ namespace PasteleriaWebApp.Data.Extensions
                 Nombre = producto.Nombre,
                 Precio = producto.Precio,
                 StockActual = producto.StockActual,
+                StockMinimo = producto.StockMinimo,
                 FechaVencimiento = producto.FechaVencimiento,
                 CategoriaID = producto.CategoriaID
             };

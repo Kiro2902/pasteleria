@@ -11,27 +11,28 @@ namespace PasteleriaWebApp.Controllers
     {
         private readonly UsuarioRepository _repo;
 
-        public AccountController(IConfiguration config)
+        // Inyección de dependencias correcta
+        public AccountController(UsuarioRepository repo)
         {
-            _repo = new UsuarioRepository(config);
+            _repo = repo;
         }
 
-        // Esta es la página que el usuario verá para loguearse
         [HttpGet]
         public IActionResult Login() => View();
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string correo, string clave)
         {
             var usuario = _repo.ValidarAcceso(correo, clave);
 
             if (usuario != null)
             {
-                // Aquí creamos la "identidad" del usuario con sus Claims (Etiquetas)
+                // Creamos los Claims con el NombreRol que viene de la base de datos
                 var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, usuario.Nombre),
                     new Claim(ClaimTypes.Email, usuario.Correo),
-                    new Claim(ClaimTypes.Role, usuario.NombreRol) // "Administrador" o "Empleado"
+                    new Claim(ClaimTypes.Role, usuario.NombreRol)
                 };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -39,10 +40,11 @@ namespace PasteleriaWebApp.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                return RedirectToAction("Index", "Home");
+                // Redirigimos al Inventario de Productos
+                return RedirectToAction("Index", "Producto");
             }
 
-            ViewBag.Error = "Credenciales incorrectas. Intenta de nuevo.";
+            ViewBag.Error = "Credenciales incorrectas. Verifica tu correo y clave.";
             return View();
         }
 

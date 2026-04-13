@@ -1,0 +1,55 @@
+﻿@model IEnumerable<PasteleriaWebApp.Models.Producto>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Inventario de Insumos</h2>
+        <form asp-action="Index" method="get" class="d-flex w-50">
+            <input type="text" name="buscar" class="form-control me-2" placeholder="Buscar insumo..." value="@ViewBag.busquedaActual" />
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+    </div>
+
+    @if (TempData["Mensaje"] != null)
+    {
+            <div class="alert alert-success mt-2">@TempData["Mensaje"]</div>
+    }
+
+    <table class="table table-hover shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Stock Actual</th>
+                <th>Stock Mínimo</th>
+                <th>Vencimiento</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                    <tr class="@(item.StockActual <= item.StockMinimo ? "table-warning" : "")">
+                        <td>@item.Nombre</td>
+                        <td>@item.NombreCategoria</td>
+                        <td class="fw-bold">@item.StockActual</td>
+                        <td>@item.StockMinimo</td>
+                        <td>@(item.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "-")</td>
+                        <td>
+                            <a asp-action="Retirar" asp-route-id="@item.IdProducto" class="btn btn-info btn-sm">Retirar Stock</a>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= ViewBag.paginas; i++)
+            {
+                    <li class="page-item @(i == ViewBag.paginaActual ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-buscar="@ViewBag.busquedaActual">@i</a>
+                    </li>
+            }
+        </ul>
+    </nav>
+</div>

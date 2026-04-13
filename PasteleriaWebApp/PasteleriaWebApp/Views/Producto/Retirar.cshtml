@@ -1,0 +1,43 @@
+﻿@model PasteleriaWebApp.Models.Producto
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-info shadow">
+                <div class="card-header bg-info text-white text-center">
+                    <h4>Salida de Insumo</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title text-center text-primary">@Model.Nombre</h5>
+                    <p class="text-center text-muted small">Stock disponible: <strong>@Model.StockActual</strong></p>
+                    <hr />
+
+                    @if (ViewBag.Error != null)
+                    {
+                            <div class="alert alert-danger text-center">@ViewBag.Error</div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                            <div class="alert alert-danger text-center">@TempData["Error"]</div>
+                    }
+
+                    <form asp-action="Retirar" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="IdProducto" value="@Model.IdProducto" />
+
+                        <div class="mb-3 text-center">
+                            <label class="form-label fw-bold">Cantidad a retirar:</label>
+                            <input type="number" name="CantidadRetiro" class="form-control form-control-lg text-center" 
+                                   min="1" max="@Model.StockActual" required />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Confirmar Salida</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

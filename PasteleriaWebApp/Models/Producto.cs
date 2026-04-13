@@ -10,7 +10,7 @@ namespace PasteleriaWebApp.Models
         [DisplayName("Nombre del producto")]
         [MinLength(10, ErrorMessage = "La longitud mínima del nombre es de 10 caracteres.")]
         [Required(ErrorMessage = "El nombre del producto es obligatorio.")]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         [Range(1, double.MaxValue, ErrorMessage = "El precio del producto debe ser de al menos s/ 1.00.")]
         [Required(ErrorMessage = "El precio es obligatorio.")]

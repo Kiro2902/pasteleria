@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using PasteleriaWebApp.Data.Infrastructure;
-using PasteleriaWebApp.Data.Repositories;
+using PasteleriaWebApp.Data.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // INYECTAR DEPENDENCIAS
-builder.Services.AddScoped<ICategoria, CategoriaRepository>();
-builder.Services.AddScoped<IProducto, ProductoRepository>();
+builder.Services.AddScoped<ProductoServices>();
+builder.Services.Inyeccion(); // Método de extensión 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
@@ -35,7 +34,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-
+app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",

@@ -23,7 +23,7 @@ namespace PasteleriaWebApp.Data.Repositories
             List<Producto> listado = new List<Producto>();
             using (var conexion = new SqlConnection(cadenaConexion))
             {
-                using (var comando = new SqlCommand("SELECT P.*, CP.Nombre AS NombreCategoria FROM Productos P INNER JOIN CategoriaProductos CP ON P.IDCategoria = CP.ID", conexion))
+                using (var comando = new SqlCommand("SELECT P.*, C.NombreCategoria AS NombreCategoria FROM Productos P INNER JOIN Categorias C ON P.IDCategoria = C.IDCategoria", conexion))
                 {
                     conexion.Open();
                     using (var lector = comando.ExecuteReader())
@@ -120,7 +120,7 @@ namespace PasteleriaWebApp.Data.Repositories
                 Precio = lector.GetDecimal(2),
                 StockActual = lector.GetInt32(3),
                 StockMinimo = lector.GetInt32(4),
-                FechaVencimiento = lector.GetDateTime(55),
+                FechaVencimiento = lector.GetDateTime(5),
                 DiasAlerta = lector.GetInt32(6),
                 CategoriaID = lector.GetInt32(7),
                 Categoria = new Categoria()

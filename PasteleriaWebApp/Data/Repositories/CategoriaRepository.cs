@@ -30,7 +30,7 @@ namespace PasteleriaWebApp.Data.Repositories
                         if (reader != null && reader.HasRows)
                         {
                             while (reader.Read())
-                                listaCategorias.Add(convertirReaderEnCategoria(reader));
+                                listaCategorias.Add(ConvertirReaderEnObjeto(reader));
                         }
                     }
                 }
@@ -45,7 +45,21 @@ namespace PasteleriaWebApp.Data.Repositories
 
         public Categoria ObtenerPorID(int id)
         {
-            throw new NotImplementedException();
+            Categoria categoria = null;
+            using var conexion = new SqlConnection(cadenaConexion);
+            using var comando = new SqlCommand("ObtenerCategoria", conexion);
+            comando.CommandType = System.Data.CommandType.StoredProcedure;
+            comando.Parameters.AddWithValue("@Id" +
+                "" +
+                "", id);
+            conexion.Open();
+            using var reader = comando.ExecuteReader();
+            if (reader != null && reader.HasRows)
+            {
+                reader.Read();
+                categoria = ConvertirReaderEnObjeto(reader);
+            }
+            return categoria;
         }
 
         public bool Registrar(Categoria entity)
@@ -55,7 +69,7 @@ namespace PasteleriaWebApp.Data.Repositories
 
         #region . Métodos Privados .
 
-        private Categoria convertirReaderEnCategoria(SqlDataReader lector)
+        private Categoria ConvertirReaderEnObjeto(SqlDataReader lector)
         {
             return new Categoria
             {

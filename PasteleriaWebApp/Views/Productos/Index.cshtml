@@ -1,0 +1,52 @@
+﻿@model IEnumerable<PasteleriaWebApp.ViewModels.ProductoVM>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form class="row g-3">
+    <div class="col-auto">
+        <label for="categoria" class="form-label">Categoría</label>
+        <select class="form-select" name="categoria" asp-items="ViewBag.categorias">
+            <option value="">--TODOS--</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <label for="producto" class="form-label">Producto</label>
+        <input class="form-control" type="text" name="producto" value="@ViewBag.busquedaActual" />
+    </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<div class="row row-cols-1 row-cols-3">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Nombre</h5>
+                    <p class="card-text">S/. @item.Precio</p>
+                    <p class="card-text">@item.StockActual</p>
+                    
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<nav aria-label="Page Navigation">
+    <ul class="pagination pagination-sm">
+        @for (int i = 0; i < ViewBag.paginas; i++)
+        {
+            <li class="page-item @(ViewBag.paginaActual == (i + 1) ? "active" : "")">
+                <a class="page-link" asp-route-page="@(i + 1)" asp-route-categoria="@ViewBag.categoriaActual">@(i + 1)</a>
+            </li>
+        }
+    </ul>
+</nav>
